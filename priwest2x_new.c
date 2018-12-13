@@ -1,7 +1,6 @@
 //Progarama igual a PRIWEST2X.C en el que se ha habilitado el JMP5 para �rea de inhibici�n.
 // 0 --> 3 MN
 // 1 --> 7 MN
-//q onda 
 
 //PRIMARIO 113
 //El pretrigger o PRF se produce 40 useg antes del ZMT (P3)

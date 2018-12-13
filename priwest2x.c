@@ -1,6 +1,7 @@
 //PRIMARIO 113
 //El pretrigger o PRF se produce 40 useg antes del ZMT (P3)
-//Esta demora DEBE SER compensada a nivel FPGA por lo que el inicio de la lectura de Rango es casi coincidente con el ZMT 
+//Esta demora DEBE SER compensada a nivel FPGA por lo que el inicio de la lectura de Rango es casi coincidente con el ZMT
+//
 
 #include <stdio.h>
 #include <dos.h>
@@ -429,10 +430,10 @@ void blancos(unsigned int az, unsigned int rng, unsigned int Altr)
    PlotBuffUDP[iwr_u++] = (rng & 0xff00)>>8;
    PlotBuffUDP[iwr_u++] = Altr & 0x00ff;
    PlotBuffUDP[iwr_u++] = ((Altr & 0x0F00)>>8)+ 0xC0;
- 
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
   }
-//++++++++++++++++++++++++++++++++++++++++++++++++++++  
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
 //reordenamiento de bytes en el buffer
 
 for(iwr_u=0;iwr_u<=5;iwr_u=iwr_u+2)
@@ -491,14 +492,14 @@ void cabecera(char sect)
        iwr_u=0;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-       
+
 }
 
 int Primario(unsigned int lectura)
 {
    //unsigned int retorno;
 
-   int ss,tt,uu;	
+   int ss,tt,uu;
    int aux;
    int j;
    int dif;
@@ -625,8 +626,8 @@ int Primario(unsigned int lectura)
 //	}													//HABILITAR PARA WESTINGHOUSE????????????????????
 
 	//SOLO PARA 113 -----------------------------------------------------------------------------------------------
-	//Antes de poner el blanco en el buffer de transmisión
-	 //se verifica si hay dato de altura y si éste es asociable
+	//Antes de poner el blanco en el buffer de transmisiï¿½n
+	 //se verifica si hay dato de altura y si ï¿½ste es asociable
 	 //al dato a transmitir
 	 if(Flag_alt){//Hay dato de altura
 	 //cprintf("AP=%x  ",(aztprom & 0x0F00)>>8);
@@ -635,7 +636,7 @@ int Primario(unsigned int lectura)
 	 			   (sector_alt==((((aztprom & 0x0F00)>>8)-1) & 0x0F))|   //sector anterior
 	 			   (sector_alt==((((aztprom & 0x0F00)>>8)+1) & 0x0F))){  //sector posterior
 
-	 					//Se calcula la posición X-Y del blanco
+	 					//Se calcula la posiciï¿½n X-Y del blanco
 	 					X_bco =  (float)(prs[j].rangoinic & 0x0fff)*0.238356 * sin((float)(aztprom)*2*PI/4096.0);//En MN
   						Y_bco =  (float)(prs[j].rangoinic & 0x0fff)*0.238356 * cos((float)(aztprom)*2*PI/4096.0);//En MN
   						//cprintf("Xb=%x  ",prs[j].rangoinic  & 0x0fff);
@@ -644,7 +645,7 @@ int Primario(unsigned int lectura)
   						//Se calcula la distancia entre blanco y dato-altura
   						Dist =  sqrt((X_bco - X_alt)*(X_bco - X_alt) + (Y_bco - Y_alt)*(Y_bco - Y_alt));//En MN
   						cprintf("Dist=%d  ",Dist);
-  						//Se verifica si está dentro de la distancia aceptable para su asociación
+  						//Se verifica si estï¿½ dentro de la distancia aceptable para su asociaciï¿½n
  						if(Dist<Dist_max){//Se asocia dato de altura a plot y se manda a Buffer de tx
 	 							blancos(aztprom,prs[j].rangoinic,alt_alt);
 	 							cprintf("EXITO  ");
@@ -661,10 +662,10 @@ int Primario(unsigned int lectura)
  				}
 	 else ////No hay dato de altura; se manda a Buffer de tx
 	 	blancos(aztprom,prs[j].rangoinic,prs[j].Altura);
-	 
+
 	}
 	//FIN SOLO PARA 113------------------------------------------------------------------------------------------------------------------
-	
+
 	for (i=j;i<indice;i++)
 	{
 	 prs[i]=prs[i+1];
@@ -674,7 +675,7 @@ int Primario(unsigned int lectura)
        }
       }
      }
-     else 
+     else
      {
       banderainic = 1;
       if(lectura==azimuth)
@@ -701,13 +702,13 @@ int Primario(unsigned int lectura)
 	     	//printf("[%d][%d][%d]= %d --> %d   MCT= %d \n",vuelta_mapa,(azimuth & 0x0FFF)/32,(lectura & 0x0FFF)/8,Mapa_Clutter[vuelta_mapa][(azimuth & 0x0FFF)/32][(lectura & 0x0FFF)/8],Mapa_Umbral[(azimuth & 0x0FFF)/32][(lectura & 0x0FFF)/8],Mapa_Clutter_Total[(azimuth & 0x0FFF)/32][(lectura & 0x0FFF)/8]);
 	     	}
 	     */
-	     
+
 	     //lectura = (lectura & 0x0FFF);  //4-abr-12
 	     //Si el rango es menor a 5 MN (cuenta RC=21) no procesa!!!!   //4-abr-12
-	//SOLO PARA 113-->     if(((lectura & 0x0FFF) < 21)||((lectura & 0x0FFF) > 0x0FFF)){}  //Verifica, además, que este dentro del rango  //1-abr-12
+	//SOLO PARA 113-->     if(((lectura & 0x0FFF) < 21)||((lectura & 0x0FFF) > 0x0FFF)){}  //Verifica, ademï¿½s, que este dentro del rango  //1-abr-12
 	//SOLO PARA 113 --> else{
 	     //cprintf("%x  ",lectura);
-	     //Si es dato de altura y no excedió el limite de clutter
+	     //Si es dato de altura y no excediï¿½ el limite de clutter
       //if((PrsAltura==1)&&(Mapa_Umbral[(azimuth & 0x0FFF)/64][(lectura & 0x0FFF)/8]))
       if(PrsAltura==1)
         {
@@ -737,7 +738,7 @@ int Primario(unsigned int lectura)
            }
         return(0);
         }
-        //Si es rango y no excedió el limite de clutter
+        //Si es rango y no excediï¿½ el limite de clutter
        //if ((bandera_azt==1)&&(Mapa_Umbral[(azimuth & 0x0FFF)/64][(lectura & 0x0FFF)/8]))
        if (bandera_azt==1)
         {
@@ -793,8 +794,8 @@ int Primario(unsigned int lectura)
      else  /*es dato de altura*/
        {
 	       //No excedio limite clutter
-	 
-//	 if (Mapa_Umbral[(azimuth & 0x0FFF)/64][(lectura & 0x0FFF)/8]){       
+
+//	 if (Mapa_Umbral[(azimuth & 0x0FFF)/64][(lectura & 0x0FFF)/8]){
         	PrsAltura=1;
         	AlturaTemp=lectura&0x00ff;
         	//cprintf("%x  ",AlturaTemp);
@@ -910,7 +911,7 @@ void lee_altura()
  int aa=0;
  float alt_max=100000.00;
 
- if(IndWr==IndRd){}	//No hay dato leído
+ if(IndWr==IndRd){}	//No hay dato leï¿½do
  else{//Hay dato
  		bu8=InBuff[IndRd];
  		//cprintf("%x  ",bu8);
@@ -937,7 +938,7 @@ void lee_altura()
 		 							if((alt_alt & mascara)!= 0)
 			 								intalt=intalt+alt_max/2;
 			 						alt_max=alt_max/2;
-		 							mascara=mascara>>1;		 							
+		 							mascara=mascara>>1;
 	 								}
 	 					//cprintf("ALT_ALT= %x   ",alt_alt);
 	 					cprintf("ALT=%3.2f    ",intalt);
