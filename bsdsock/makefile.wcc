@@ -1,0 +1,260 @@
+#
+#    $Id: MAKEFILE.WCC 1.9 2005/03/02 17:49:40Z peterb Exp $
+#
+#    *** DO NOT REMOVE THE FOLLOWING NOTICE ***
+#
+#    Copyright (c) 1993 - 2008 Datalight, Inc.
+#    All Rights Reserved
+#
+#    Datalight, Inc. is a Washington corporation with an address at
+#    21520 30TH DR SE MS110 Bothell, WA, 98021
+#    Tel: 800.221.6630  Fax: 425.951.8091
+#    Http://www.datalight.com
+#
+#    This software, including without limitation all source code and
+#    documentation, is the confidential, trade secret property of
+#    Datalight, Inc., and is protected under the copyright laws of
+#    the United States and other jurisdictions. Portions of the
+#    software may also be subject to one or more the following US
+#    patents: US#5860082, US#6260156.
+#
+#    In addition to civil penalties for infringement of copyright
+#    under applicable U.S. law, 17 U.S.C. §1204 provides criminal
+#    penalties for violation of (a) the restrictions on circumvention
+#    of copyright protection systems found in 17 U.S.C. §1201 and
+#    (b) the protections for the integrity of copyright management
+#    information found in 17 U.S.C. §1202.
+#
+#    U.S. Government Restricted Rights. Use, duplication,
+#    reproduction, or transfer of this commercial product and
+#    accompanying documentation is restricted in accordance with
+#    FAR 12.212 and DFARS 227.7202 and by a License Agreement.
+#
+#    IN ADDITION TO COPYRIGHT AND PATENT LAW, THIS SOFTWARE IS
+#    PROTECTED UNDER A SOURCE CODE AGREEMENT, NON-DISCLOSURE
+#    AGREEMENT (NDA), OR SIMILAR BINDING CONTRACT BETWEEN DATALIGHT,
+#    INC. AND THE LICENSEE ("BINDING AGREEMENT"). YOUR RIGHT, IF ANY,
+#    TO COPY, PUBLISH, MODIFY OR OTHERWISE USE THE SOFTWARE,IS SUBJECT
+#    TO THE TERMS AND CONDITIONS OF THE BINDING AGREEMENT, AND BY
+#    USING THE SOFTWARE IN ANY MANNER, IN WHOLE OR IN PART, YOU AGREE
+#    TO BE BOUND BY THE TERMS OF THE BINDING AGREEMENT. CONTACT
+#    DATALIGHT, INC. AT THE ADDRESS SET FORTH ABOVE IF YOU OBTAINED
+#    THIS SOFTWARE IN ERROR.
+#
+#
+# MAKEFILE for Datalight's Socket Library Routines for Watcom C
+#
+# To (re)build a specific SOCKET library:
+#  wmake -a -f makefile.wcc [CPU=0|1|2|3|4|5|6] [MODEL=f|s|m|c|l|h] [CALL=r|s] [OPTS=<user_options>]
+#
+# This file to build library for any memory model.
+#
+# HISTORY
+# 09/17/08 gvn remove /zp1 and /zpd
+# 04/15/08 gvn first version for Watcom C
+# 10/20/07 gvn first version for DJGPP
+# 12/06/04 gvn Removed need for response file, made maintenance simpler
+# 11/20/04 gvn Added IPv6 related functions, wship6.lib, WS2tcpip.h
+# 08/11/03 gvn Removed rules to make response file
+#
+#
+MODEL    = f
+!ifeqi MODEL f
+CPU      = 3
+CALL     = r
+CC       = WCC386
+!else
+CPU      = 0
+CALL     =
+CC       = WCC
+!endif
+NAME     = wsock$(MODEL)$(CPU)$(CALL)
+CFLAGS   = /m$(MODEL) /bt=dos /$(CPU)$(CALL) /s /wx /zq $(OPTS)&
+ /I..\INCLUDE /I$(%WATCOM)\H /dIPV6 /d_SAPI_LIBRARY
+LFLAGS   = $(RD_SW_L)
+LIB      = WLIB
+
+C =    $(CC) $(CFLAGS) -fo=$* -D_SAPI_$* socket.c
+A =   $(LIB) /q $(NAME).lib +$*
+
+# RELEASE
+# -------------
+release : clean $(NAME).lib copyrel
+
+copyrel : .SYMBOLIC
+        @if exist ..\LIB\$(NAME).lib del ..\lib\$(NAME).lib  >nul
+        @if not exist ..\LIB\nul md ..\lib >nul
+        @copy $(NAME).lib ..\lib >nul
+
+# Define the modules of the library.
+#
+OBJ1 = ACCEPT.OBJ BIND.OBJ CLOSESOC.OBJ CONNECT.OBJ IOCTLSOC.OBJ
+OBJ2 = GETPEERN.OBJ GETSOCKN.OBJ GETSOCKO.OBJ HTONL.OBJ HTONS.OBJ
+OBJ3 = INETADDR.OBJ INETNTOA.OBJ LISTEN.OBJ NTOHL.OBJ NTOHS.OBJ
+OBJ4 = RECV.OBJ RECVFROM.OBJ SELECT.OBJ SEND.OBJ SENDTO.OBJ
+OBJ5 = SETSOCKO.OBJ SHUTDOWN.OBJ SOCKET.OBJ GHOSTBYA.OBJ GHOSTBYN.OBJ
+OBJ6 = GHOSTNAM.OBJ GSERVBYP.OBJ GSERVBYN.OBJ GPROTONU.OBJ GPROTONA.OBJ
+OBJ7 = WSASTART.OBJ WSASETER.OBJ WSAGETER.OBJ
+OBJ8 = GETADDRI.OBJ INETNTOP.OBJ GAISTRER.OBJ
+OBJ9 = ISSET.OBJ FDCLR.OBJ FDSET.OBJ MAPERROR.OBJ GETREADC.OBJ
+OBJ10 = CNVRT128.OBJ GETNEXTP.OBJ CHECKUDP.OBJ DATABASE.OBJ BASE.OBJ
+
+MODULES = $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10)
+
+
+
+#
+# build the specified library
+#
+$(NAME).lib : $(MODULES)
+   @echo done $(NAME)
+
+ACCEPT.OBJ:   socket.c
+   $C
+   $A
+BIND.OBJ:   socket.c
+   $C
+   $A
+CLOSESOC.OBJ:   socket.c
+   $C
+   $A
+CONNECT.OBJ:   socket.c
+   $C
+   $A
+IOCTLSOC.OBJ:   socket.c
+   $C
+   $A
+GETPEERN.OBJ:   socket.c
+   $C
+   $A
+GETSOCKN.OBJ:   socket.c
+   $C
+   $A
+GETSOCKO.OBJ:    socket.c
+   $C
+   $A
+HTONL.OBJ:   socket.c
+   $C
+   $A
+HTONS.OBJ:   socket.c
+   $C
+   $A
+INETADDR.OBJ:   socket.c
+   $C
+   $A
+INETNTOA.OBJ:   socket.c
+   $C
+   $A
+LISTEN.OBJ:   socket.c
+   $C
+   $A
+NTOHL.OBJ:   socket.c
+   $C
+   $A
+NTOHS.OBJ:   socket.c
+   $C
+   $A
+RECV.OBJ:   socket.c
+   $C
+   $A
+RECVFROM.OBJ:   socket.c
+   $C
+   $A
+SELECT.OBJ:   socket.c
+   $C
+   $A
+SEND.OBJ:   socket.c
+   $C
+   $A
+SENDTO.OBJ:   socket.c
+   $C
+   $A
+SETSOCKO.OBJ:   socket.c
+   $C
+   $A
+SHUTDOWN.OBJ:   socket.c
+   $C
+   $A
+SOCKET.OBJ:   socket.c
+   $C
+   $A
+GHOSTBYA.OBJ:   socket.c
+   $C
+   $A
+GHOSTBYN.OBJ:   socket.c
+   $C
+   $A
+GHOSTNAM.OBJ:   socket.c
+   $C
+   $A
+GSERVBYP.OBJ:   socket.c
+   $C
+   $A
+GSERVBYN.OBJ:   socket.c
+   $C
+   $A
+GPROTONU.OBJ:   socket.c
+   $C
+   $A
+GPROTONA.OBJ:   socket.c
+   $C
+   $A
+WSASTART.OBJ:   socket.c
+   $C
+   $A
+WSASETER.OBJ:   socket.c
+   $C
+   $A
+WSAGETER.OBJ:   socket.c
+   $C
+   $A
+GETADDRI.OBJ:   socket.c
+   $C
+   $A
+INETNTOP.OBJ:   socket.c
+   $C
+   $A
+GAISTRER.OBJ:   socket.c
+   $C
+   $A
+CNVRT128.OBJ:   socket.c
+   $C
+   $A
+ISSET.OBJ:   socket.c
+   $C
+   $A
+FDCLR.OBJ:   socket.c
+   $C
+   $A
+FDSET.OBJ:   socket.c
+   $C
+   $A
+MAPERROR.OBJ:   socket.c
+   $C
+   $A
+GETREADC.OBJ:   socket.c
+   $C
+   $A
+GETNEXTP.OBJ:   socket.c
+   $C
+   $A
+CHECKUDP.OBJ:   socket.c
+   $C
+   $A
+DATABASE.OBJ:   socket.c
+   $C
+   $A
+BASE.OBJ:   socket.c
+   $C
+   $A
+
+# HOUSEKEEPING
+# -----------------
+clean : .SYMBOLIC
+   @if exist *.obj del *.obj
+   @if exist $(NAME).lib del $(NAME).lib
+
+cleanall: clean
+   @if exist status.me del status.me
+   @if exist build.log del build.log
+

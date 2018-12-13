@@ -1,0 +1,257 @@
+#
+#	 $Id: MAKEFILE.DJP 1.9 2005/03/02 17:49:40Z peterb Exp $
+#
+#	 *** DO NOT REMOVE THE FOLLOWING NOTICE ***
+#
+#	 Copyright (c) 1993 - 2005 Datalight, Inc.
+#	 All Rights Reserved
+#
+#	 Datalight, Inc. is a Washington corporation with an address at
+#	 21520 30TH DR SE MS110 Bothell, WA, 98021
+#	 Tel: 800.221.6630  Fax: 425.951.8091
+#	 Http://www.datalight.com
+#
+#	 This software, including without limitation all source code and
+#	 documentation, is the confidential, trade secret property of
+#	 Datalight, Inc., and is protected under the copyright laws of
+#	 the United States and other jurisdictions. Portions of the
+#	 software may also be subject to one or more the following US
+#	 patents: US#5860082, US#6260156.
+#
+#	 In addition to civil penalties for infringement of copyright
+#	 under applicable U.S. law, 17 U.S.C. §1204 provides criminal
+#	 penalties for violation of (a) the restrictions on circumvention
+#	 of copyright protection systems found in 17 U.S.C. §1201 and
+#	 (b) the protections for the integrity of copyright management
+#	 information found in 17 U.S.C. §1202.
+#
+#	 U.S. Government Restricted Rights. Use, duplication,
+#	 reproduction, or transfer of this commercial product and
+#	 accompanying documentation is restricted in accordance with
+#	 FAR 12.212 and DFARS 227.7202 and by a License Agreement.
+#
+#	 IN ADDITION TO COPYRIGHT AND PATENT LAW, THIS SOFTWARE IS
+#	 PROTECTED UNDER A SOURCE CODE AGREEMENT, NON-DISCLOSURE
+#	 AGREEMENT (NDA), OR SIMILAR BINDING CONTRACT BETWEEN DATALIGHT,
+#	 INC. AND THE LICENSEE ("BINDING AGREEMENT"). YOUR RIGHT, IF ANY,
+#	 TO COPY, PUBLISH, MODIFY OR OTHERWISE USE THE SOFTWARE,IS SUBJECT
+#	 TO THE TERMS AND CONDITIONS OF THE BINDING AGREEMENT, AND BY
+#	 USING THE SOFTWARE IN ANY MANNER, IN WHOLE OR IN PART, YOU AGREE
+#	 TO BE BOUND BY THE TERMS OF THE BINDING AGREEMENT. CONTACT
+#	 DATALIGHT, INC. AT THE ADDRESS SET FORTH ABOVE IF YOU OBTAINED
+#	 THIS SOFTWARE IN ERROR.
+#
+#
+# MAKEFILE for Datalight's Socket Library Routines for DJGPP
+#
+#
+# HISTORY
+# 05/02/08 gvn avoid 'Extended error 183' on WinXP
+# 10/20/07 gvn first version for DJGPP
+# 12/06/04 gvn Removed need for response file, made maintenance simpler
+# 11/20/04 gvn Added IPv6 related functions, wship6.lib, WS2tcpip.h
+# 08/11/03 gvn Removed rules to make response file
+#
+#
+CC=gcc $(CFLAGS) -c -o $@
+CFLAGS=-I../include -Wimplicit -Wall -Wno-pointer-sign\
+	-Wno-unknown-pragmas -Wno-char-subscripts -D_SAPI_LIBRARY -DIPV6
+LFLAGS	= $(RD_SW_L)
+C = 	$(CC) -D_SAPI_$(subst .O,,$@) socket.c
+A=
+
+# RELEASE
+# -------------
+release : clean libsock copyrel
+
+copyrel:
+		  @if exist ..\LIB\libsock.a del ..\lib\libsock.a >nul
+#		  @if not exist ..\LIB\nul md ..\lib >nul
+		  @copy libsock.a ..\lib >nul
+
+# Define the modules of the library.
+#
+OBJ1 = ACCEPT.O BIND.O CLOSESOC.O CONNECT.O IOCTLSOC.O
+OBJ2 = GETPEERN.O GETSOCKN.O GETSOCKO.O HTONL.O HTONS.O
+OBJ3 = INETADDR.O INETNTOA.O LISTEN.O NTOHL.O NTOHS.O
+OBJ4 = RECV.O RECVFROM.O SELECT.O SEND.O SENDTO.O
+OBJ5 = SETSOCKO.O SHUTDOWN.O SOCKET.O GHOSTBYA.O GHOSTBYN.O
+OBJ6 = GHOSTNAM.O GSERVBYP.O GSERVBYN.O GPROTONU.O GPROTONA.O
+OBJ7 = WSASTART.O WSASETER.O WSAGETER.O
+OBJ8 = GETADDRI.O INETNTOP.O GAISTRER.O
+OBJ9 = ISSET.O FDCLR.O FDSET.O MAPERROR.O GETREADC.O
+OBJ10 = CNVRT128.O GETNEXTP.O CHECKUDP.O DATABASE.O BASE.O
+
+MODULES = $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10)
+
+
+
+#
+# build the specified library
+#
+libsock : $(MODULES)
+	ar rcs libsock.a $(MODULES)
+	@echo done libsock.a
+
+ACCEPT.O:	socket.c
+	$C
+	$A
+BIND.O:	socket.c
+	$C
+	$A
+CLOSESOC.O:	socket.c
+	$C
+	$A
+CONNECT.O:	socket.c
+	$C
+	$A
+IOCTLSOC.O:	socket.c
+	$C
+	$A
+GETPEERN.O:	socket.c
+	$C
+	$A
+GETSOCKN.O:	socket.c
+	$C
+	$A
+GETSOCKO.O:	 socket.c
+	$C
+	$A
+HTONL.O:	socket.c
+	$C
+	$A
+HTONS.O:	socket.c
+	$C
+	$A
+INETADDR.O:	socket.c
+	$C
+	$A
+INETNTOA.O:	socket.c
+	$C
+	$A
+LISTEN.O:	socket.c
+	$C
+	$A
+NTOHL.O:	socket.c
+	$C
+	$A
+NTOHS.O:	socket.c
+	$C
+	$A
+RECV.O:	socket.c
+	$C
+	$A
+RECVFROM.O:	socket.c
+	$C
+	$A
+SELECT.O:	socket.c
+	$C
+	$A
+SEND.O:	socket.c
+	$C
+	$A
+SENDTO.O:	socket.c
+	$C
+	$A
+SETSOCKO.O:	socket.c
+	$C
+	$A
+SHUTDOWN.O:	socket.c
+	$C
+	$A
+SOCKET.O:	socket.c
+	$C
+	$A
+GHOSTBYA.O:	socket.c
+	$C
+	$A
+GHOSTBYN.O:	socket.c
+	$C
+	$A
+GHOSTNAM.O:	socket.c
+	$C
+	$A
+GSERVBYP.O:	socket.c
+	$C
+	$A
+GSERVBYN.O:	socket.c
+	$C
+	$A
+GPROTONU.O:	socket.c
+	$C
+	$A
+GPROTONA.O:	socket.c
+	$C
+	$A
+WSASTART.O:	socket.c
+	$C
+	$A
+WSASETER.O:	socket.c
+	$C
+	$A
+WSAGETER.O:	socket.c
+	$C
+	$A
+GETADDRI.O:	socket.c
+	$C
+	$A
+INETNTOP.O:	socket.c
+	$C
+	$A
+GAISTRER.O:	socket.c
+	$C
+	$A
+CNVRT128.O:	socket.c
+	$C
+	$A
+ISSET.O:	socket.c
+	$C
+	$A
+FDCLR.O:	socket.c
+	$C
+	$A
+FDSET.O:	socket.c
+	$C
+	$A
+MAPERROR.O:	socket.c
+	$C
+	$A
+GETREADC.O:	socket.c
+	$C
+	$A
+GETNEXTP.O:	socket.c
+	$C
+	$A
+CHECKUDP.O:	socket.c
+	$C
+	$A
+DATABASE.O:	socket.c
+	$C
+	$A
+BASE.O:	socket.c
+	$C
+	$A
+
+# HOUSEKEEPING
+# -----------------
+clean :
+	@if exist *.o del *.o
+	@if exist *.map del *.map
+	@if exist *.lnk del *.lnk
+	@if exist *.xrf del *.xrf
+	@if exist *.lst del *.lst
+	@if exist *.exe del *.exe
+	@if exist *.pt del *.pt
+	@if exist *.td del *.td
+	@if exist *.tr del *.tr
+	@if exist *.bak del *.bak
+	@if exist *.lib del *.lib
+	@if exist x.y del x.y
+	@if exist err.txt del err.txt
+	@if exist status.me del status.me
+
+cleanall : clean
+	@if exist status.me del status.me
+	@if exist build.log del build.log
+		  @if exist ..\lib\libsock.a del ..\lib\libsoc.a >nul
+

@@ -1,0 +1,343 @@
+#
+#   $Id: MAKEFILE.WCC 1.12 2005/03/02 17:50:26Z peterb Exp $
+#
+#
+#   *** DO NOT REMOVE THE FOLLOWING NOTICE ***
+#
+#   Copyright (c) 1993 - 2008 Datalight, Inc.
+#   All Rights Reserved
+#
+#   Datalight, Inc. is a Washington corporation with an address at
+#   21520 30TH DR SE MS110 Bothell, WA, 98021
+#   Tel: 800.221.6630  Fax: 425.951.8091
+#   Http://www.datalight.com
+#
+#   This software, including without limitation all source code and
+#   documentation, is the confidential, trade secret property of
+#   Datalight, Inc., and is protected under the copyright laws of
+#   the United States and other jurisdictions. Portions of the
+#   software may also be subject to one or more the following US
+#   patents: US#5860082, US#6260156.
+#
+#   In addition to civil penalties for infringement of copyright
+#   under applicable U.S. law, 17 U.S.C. §1204 provides criminal
+#   penalties for violation of (a) the restrictions on circumvention
+#   of copyright protection systems found in 17 U.S.C. §1201 and
+#   (b) the protections for the integrity of copyright management
+#   information found in 17 U.S.C. §1202.
+#
+#   U.S. Government Restricted Rights. Use, duplication,
+#   reproduction, or transfer of this commercial product and
+#   accompanying documentation is restricted in accordance with
+#   FAR 12.212 and DFARS 227.7202 and by a License Agreement.
+#
+#   IN ADDITION TO COPYRIGHT AND PATENT LAW, THIS SOFTWARE IS
+#   PROTECTED UNDER A SOURCE CODE AGREEMENT, NON-DISCLOSURE
+#   AGREEMENT (NDA), OR SIMILAR BINDING CONTRACT BETWEEN DATALIGHT,
+#   INC. AND THE LICENSEE ("BINDING AGREEMENT"). YOUR RIGHT, IF ANY,
+#   TO COPY, PUBLISH, MODIFY OR OTHERWISE USE THE SOFTWARE,IS SUBJECT
+#   TO THE TERMS AND CONDITIONS OF THE BINDING AGREEMENT, AND BY
+#   USING THE SOFTWARE IN ANY MANNER, IN WHOLE OR IN PART, YOU AGREE
+#   TO BE BOUND BY THE TERMS OF THE BINDING AGREEMENT. CONTACT
+#   DATALIGHT, INC. AT THE ADDRESS SET FORTH ABOVE IF YOU OBTAINED
+#   THIS SOFTWARE IN ERROR.
+#
+#
+# MAKEFILE for Datalight's CAPI Library Routines
+# Watcom C/C++ syntax
+#
+# To (re)build a specific CAPI library:
+#  wmake -a -f makefile.wcc [CPU=0|1|2|3|4|5|6] [MODEL=f|s|m|c|l|h] [CALL=r|s] [OPTS=<user_options>]
+#
+# This file to build library for any memory model.
+#
+# HISTORY
+#
+# 09/17/08 gvn change -zp1 and -zpd flags, split _capi.c
+# 04/12/08 gvn multiple WATCOM models, CPUs and calling conventions
+# 01/10/08 psm first WATCOM version
+# 10/20/07 gvn first version for DJGPP
+# 02/14/06 gvn Added Clock function
+# 12/06/04 gvn Removed need for response file, made maintenance simpler
+#
+#
+MODEL    = f
+!ifeqi MODEL f
+CPU      = 3
+CALL     = r
+CC       = WCC386
+!else
+CPU      = 0
+CALL     =
+CC       = WCC
+!endif
+NAME     = wcapi$(MODEL)$(CPU)$(CALL)
+CFLAGS   = /m$(MODEL) /bt=dos /$(CPU)$(CALL) /s /wx /zq $(OPTS)&
+ /I..\INCLUDE /I$(%WATCOM)\H /dIPV6 /d_CAPI_LIBRARY
+LFLAGS   = $(RD_SW_L)
+LIB      = WLIB
+
+C =   $(CC) $(CFLAGS) -fo=$* -D_CAPI_$* capi.c
+A =   $(LIB) /q $(NAME).lib +$*
+
+# RELEASE
+# -------------
+release : clean $(NAME).lib copyrel
+
+copyrel : .SYMBOLIC
+        @if exist ..\LIB\$(NAME).lib del ..\lib\$(NAME).lib  >nul
+        @if not exist ..\LIB\nul md ..\lib >nul
+        @copy $(NAME).lib ..\lib >nul
+
+# Define the modules of the library.
+#
+OBJ0 = GETIPVFL.OBJ
+OBJ1 = GETSOCKV.OBJ DISABLEA.OBJ ENABLEAS.OBJ ISSOCKET.OBJ GETDCSOC.OBJ
+OBJ2 = GETSOCKE.OBJ GETVERSI.OBJ CONVERTD.OBJ EOFSOCKT.OBJ FLUSHSOC.OBJ
+OBJ3 = RELEASES.OBJ RELEASED.OBJ ABORTSOC.OBJ ABORTDCS.OBJ SHUTDOWN.OBJ
+OBJ4 = GETADDRE.OBJ GTADDREX.OBJ GTADDRIN.OBJ GETBUSYF.OBJ GETPEERA.OBJ
+OBJ5 = GTPEEREX.OBJ GETADCOM.OBJ GETKERNI.OBJ ICMPPING.OBJ ICMPPNGX.OBJ
+OBJ6 = GETKERNC.OBJ GETNETIN.OBJ CONNECTS.OBJ LISTENSO.OBJ LISTENAC.OBJ
+OBJ7 = ACCEPTSO.OBJ SELECTSO.OBJ READSOCK.OBJ READFROM.OBJ WRITESOC.OBJ
+OBJ8 = WRITETOS.OBJ SETALARM.OBJ SETASYNC.OBJ RESOLVEN.OBJ PARSEADD.OBJ
+OBJ9 = SETSOCKE.OBJ JOINGROU.OBJ LEAVEGRO.OBJ JOINGREX.OBJ LEAVEGRE.OBJ IFACEIOC.OBJ ASYNCNOT.OBJ
+OBJA = DPMICBRE.OBJ ARPAPI.OBJ PROAPI.OBJ ROUTE.OBJ MAIN.OBJ CALLBACK.OBJ CLOCK.OBJ
+
+MODULES = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJA)
+
+#
+# build the specified library
+#
+$(NAME).lib : $(MODULES)
+   @echo done $(NAME)
+
+GETIPVFL.OBJ:   capi.c
+   $C
+   $A
+
+GETSOCKV.OBJ:   capi.c
+   $C
+   $A
+
+DISABLEA.OBJ:   capi.c
+   $C
+   $A
+
+ENABLEAS.OBJ:   capi.c
+   $C
+   $A
+
+ISSOCKET.OBJ:   capi.c
+   $C
+   $A
+
+GETDCSOC.OBJ:   capi.c
+   $C
+   $A
+
+GETSOCKE.OBJ:   capi.c
+   $C
+   $A
+
+GETVERSI.OBJ:   capi.c
+   $C
+   $A
+
+CONVERTD.OBJ:   capi.c
+   $C
+   $A
+
+EOFSOCKT.OBJ:   capi.c
+   $C
+   $A
+
+FLUSHSOC.OBJ:   capi.c
+   $C
+   $A
+
+RELEASES.OBJ:   capi.c
+   $C
+   $A
+
+RELEASED.OBJ:   capi.c
+   $C
+   $A
+
+ABORTSOC.OBJ:   capi.c
+   $C
+   $A
+
+ABORTDCS.OBJ:   capi.c
+   $C
+   $A
+
+SHUTDOWN.OBJ:   capi.c
+   $C
+   $A
+
+GETADDRE.OBJ:   capi.c
+   $C
+   $A
+
+GTADDREX.OBJ:   capi.c
+   $C
+   $A
+
+GTADDRIN.OBJ:   capi.c
+   $C
+   $A
+
+GETBUSYF.OBJ:   capi.c
+   $C
+   $A
+
+GETPEERA.OBJ:   capi.c
+   $C
+   $A
+
+GTPEEREX.OBJ:   capi.c
+   $C
+   $A
+
+GETADCOM.OBJ:   capi.c
+   $C
+   $A
+
+GETKERNI.OBJ:   capi.c
+   $C
+   $A
+
+ICMPPING.OBJ:   capi.c
+   $C
+   $A
+
+ICMPPNGX.OBJ:   capi.c
+   $C
+   $A
+
+GETKERNC.OBJ:   capi.c
+   $C
+   $A
+
+GETNETIN.OBJ:   capi.c
+   $C
+   $A
+
+CONNECTS.OBJ:   capi.c
+   $C
+   $A
+
+LISTENSO.OBJ:   capi.c
+   $C
+   $A
+
+LISTENAC.OBJ:   capi.c
+   $C
+   $A
+
+ACCEPTSO.OBJ:   capi.c
+   $C
+   $A
+
+SELECTSO.OBJ:   capi.c
+   $C
+   $A
+
+READSOCK.OBJ:   capi.c
+   $C
+   $A
+
+READFROM.OBJ:   capi.c
+   $C
+   $A
+
+WRITESOC.OBJ:   capi.c
+   $C
+   $A
+
+WRITETOS.OBJ:   capi.c
+   $C
+   $A
+
+SETALARM.OBJ:   capi.c
+   $C
+   $A
+
+SETASYNC.OBJ:   capi.c
+   $C
+   $A
+
+RESOLVEN.OBJ:   capi.c
+   $C
+   $A
+
+PARSEADD.OBJ:   capi.c
+   $C
+   $A
+
+SETSOCKE.OBJ:   capi.c
+   $C
+   $A
+
+JOINGROU.OBJ:   capi.c
+   $C
+   $A
+
+LEAVEGRO.OBJ:   capi.c
+   $C
+   $A
+
+JOINGREX.OBJ:   capi.c
+   $C
+   $A
+
+LEAVEGRE.OBJ:   capi.c
+   $C
+   $A
+
+IFACEIOC.OBJ:   capi.c
+   $C
+   $A
+
+ASYNCNOT.OBJ:   capi.c
+   $C
+   $A
+
+DPMICBRE.OBJ:   capi.c
+   $C
+   $A
+
+ARPAPI.OBJ:   capi.c
+   $C
+   $A
+
+PROAPI.OBJ:   capi.c
+   $C
+   $A
+
+ROUTE.OBJ:   capi.c
+   $C
+   $A
+
+main.obj:   _capi.c
+   $(CC) $(CFLAGS) -fo=$* -D_CAPI_$* _capi.c
+   $A
+
+callback.obj:   _capi.c
+   $(CC) $(CFLAGS) -zdp -fo=$* -D_CAPI_$* _capi.c
+   $A
+
+clock.obj:   clock.c
+   $(CC) $(CFLAGS) clock.c
+   $A
+
+# HOUSEKEEPING
+# -----------------
+clean : .SYMBOLIC
+   @if exist *.obj del *.obj
+   @if exist $(NAME).lib del $(NAME).lib
+
+cleanall: clean
+   @if exist status.me del status.me
+   @if exist build.log del build.log
+

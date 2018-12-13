@@ -1,0 +1,5 @@
+project : "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwe&
+st2x_new.exe" .SYMBOLIC
+
+!include "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwes&
+t2x_new.mk1"

@@ -1,0 +1,18 @@
+fifo2.h(29): Warning! W138: No newline at end of file
+comalt.h(35): Warning! W138: No newline at end of file
+interalt.h(19): Warning! W138: No newline at end of file
+primari1.h(68): Warning! W138: No newline at end of file
+priwest2x.c(501): Warning! W202: Symbol 'uu' has been defined, but not referenced
+priwest2x.c(501): Warning! W202: Symbol 'tt' has been defined, but not referenced
+priwest2x.c(501): Warning! W202: Symbol 'ss' has been defined, but not referenced
+priwest2x.c(823): Warning! W202: Symbol 'RangoAltura' has been defined, but not referenced
+priwest2x.c(819): Warning! W202: Symbol 'dif' has been defined, but not referenced
+priwest2x.c(822): Warning! W202: Symbol 'aztfinal' has been defined, but not referenced
+priwest2x.c(820): Warning! W202: Symbol 'modulo' has been defined, but not referenced
+priwest2x.c(818): Warning! W202: Symbol 'j' has been defined, but not referenced
+priwest2x.c(821): Warning! W202: Symbol 'i' has been defined, but not referenced
+priwest2x.c(817): Warning! W202: Symbol 'aux' has been defined, but not referenced
+priwest2x.c(977): Warning! W202: Symbol 'xxx' has been defined, but not referenced
+priwest2x.c(978): Warning! W202: Symbol 'kk' has been defined, but not referenced
+priwest2x.c(977): Warning! W202: Symbol 'xxx_ant' has been defined, but not referenced
+priwest2x.c(1059): Warning! W138: No newline at end of file

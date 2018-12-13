@@ -1,0 +1,21 @@
+!define BLANK ""
+"D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwest2x_new.o&
+bj" : "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwest2x&
+_new.c" .AUTODEPEND
+ @D:
+ cd D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS
+ *wcc386 priwest2x_new.c -i=C:\WATCOM\h -w4 -e25 -zq -otexan -d2 -fp5 -fpc -&
+5r -bt=dos -mf
+
+"D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwest2x_new.e&
+xe" : "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\priwest2x&
+_new.obj" "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS\BSDSO&
+CK\wsockf3r.lib" "D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_PO&
+S\CAPI\wcapif3r.lib" .AUTODEPEND
+ @D:
+ cd D:\PROYECTO_FAS_1132\RADAR_POS\PROGRAMAS_C_C++\PRIMARIO_POS
+ @%write priwest2x_new.lk1 FIL priwest2x_new.obj
+ @%append priwest2x_new.lk1 LIBR BSDSOCK\wsockf3r.lib,CAPI\wcapif3r.lib
+ *wlink name priwest2x_new d all SYS dos32a op m op maxe=25 op q op symf @pr&
+iwest2x_new.lk1
+

@@ -1,0 +1,31 @@
+Programa ejecutable:             PRIWE2X.EXE  (04/10/2012)
+Programa fuente correspondiente: PRIWEST2X.C  (04/10/2012)
+Compilado con:                   OpenWatcom 1.5
+
+Dirección IP EDDR #1: 		 192.168.5.130	Puerto: 54321	Salida: UDP
+Dirección IP EDDR #2: 		 192.168.5.131	Puerto: 54321	Salida: UDP
+
+Velocidad salida RS232:		 57600 bps, 8bits, sin paridad, 1 bit de stop
+
+Estado jumpers:
+
+JMP1: 0
+JMP2: 1
+JMP3: 0
+JMP4: 0
+JMP5: 0
+JMP6: 1
+JMP7: 1
+JMP8: 1
+
+(*) JMP5 NO habilitado por lo que el límite de no transmisión de plots primarios es 15 MN.
+
+DIP_SWITCH: 8   (1-0-0-0)
+
+NOTA:
+Archivo:	PRIWEST2X_NEW.EXE 	Es la misma version de PRIWEST2X.EXE pero
+tiene habilitado la acción del JMP5:
+					0 --> INHIBE LAS 3 PRIMERAS MN
+					1 --> INHIBE LAS 7 PRIMERAS MN
+
+AUN NO SE PROBO EN EL RADAR!!!!!!!

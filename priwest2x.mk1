@@ -1,0 +1,19 @@
+!define BLANK ""
+"D:\FAS_1132_Final_03032012\Programas C_C++\Primario\priwest2x.obj" : "D:\FA&
+S_1132_Final_03032012\Programas C_C++\Primario\priwest2x.c" .AUTODEPEND
+ @D:
+ cd D:\FAS_1132_Final_03032012\Programas C_C++\Primario
+ *wcc386 priwest2x.c -i=C:\WATCOM\h -w4 -e25 -zq -otexan -d2 -fp5 -fpc -5r -&
+bt=dos -mf
+
+"D:\FAS_1132_Final_03032012\Programas C_C++\Primario\priwest2x.exe" : "D:\FA&
+S_1132_Final_03032012\Programas C_C++\Primario\priwest2x.obj" "D:\FAS_1132_F&
+inal_03032012\Programas C_C++\Primario\BSDSOCK\wsockf3r.lib" "D:\FAS_1132_Fi&
+nal_03032012\Programas C_C++\Primario\CAPI\wcapif3r.lib" .AUTODEPEND
+ @D:
+ cd D:\FAS_1132_Final_03032012\Programas C_C++\Primario
+ @%write priwest2x.lk1 FIL priwest2x.obj
+ @%append priwest2x.lk1 LIBR BSDSOCK\wsockf3r.lib,CAPI\wcapif3r.lib
+ *wlink name priwest2x d all SYS dos32a op m op maxe=25 op q op symf @priwes&
+t2x.lk1
+
