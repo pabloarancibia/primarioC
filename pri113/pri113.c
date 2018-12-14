@@ -216,5 +216,78 @@ void ResetFifo()
    *(uint32_t *)A_addr=0x2350;//-/outpw(0x350,ENDATOS); //reset fifo
    *(uint32_t *)D_addr=ENDATOS;
    *(uint32_t *)A_addr=0x2350;//-/ outpw(0x350,RSTFIFO); //enable datos
-   *(uint32_t *)D_addr=RSTFIFO;   
+   *(uint32_t *)D_addr=RSTFIFO;
  }
+
+
+///////////////INICIO DE GETDATO///////////////////////
+int GetDato(unsigned int* Dato )
+{
+  unsigned int Aux;
+  Aux = inpw(FIFO);
+  if(CtrlDato(Aux))
+    return -1;
+  *Dato = Aux;
+ return 0;
+}
+int CtrlDato(unsigned int Dato)
+{
+  //CONTROLA QUE EL DATO RECIBIDO PERTENEZCA A ALGUNO DE LOS ESPERADOS
+  if(((Dato&0xf000) != 0x8000)&&
+     ((Dato&0xf000) != 0x3000)&&
+     ((Dato&0xf000) != 0xC000))
+     {
+      cprintf("ERROR0   %x   ",Dato);
+      ResetFifo();
+      FlagIni = 0;
+      return -1;
+     }
+  //ESPERA EL PRIMER DATO PARA LUEGO EN EL PROXIMO , HACER EL CONTROL
+  if(!FlagIni)
+    {
+     if((Dato&0xf000) == 0x8000) AzAnt = Dato;
+     DatoAnt = Dato;
+     FlagIni = 1;
+     return 0;
+    }
+  //CONTROLA UN DATO DE AZIMUT
+  if((Dato&0xf000)  == 0x8000)
+    {
+	    AzAnt = AzAnt & 0x8FFF;
+      //SI EL DATO ES MENOR O IGUAL AL DATO DE AZIMUT ANT
+      //Y NO ES UN CAMBIO DE SECTOR
+      if(Dato <= AzAnt)
+        {
+		if(((AzAnt&0xff00) != 0x8F00) ||
+	   	((Dato&0xff00)  != 0x8000))
+	    	{
+		 	if(AzAnt!=Dato){
+		    	cprintf("%x   %x    ",AzAnt,Dato);
+		    	cprintf("ERROR1                            ");
+	        	}
+		    AzAnt=Dato;
+	     	ResetFifo();//<------------
+	     	FlagIni = 0;
+	     	return -1;
+	    	}
+		}
+	//SI ES CAMBIO DE SECTOR, MANDA UN CARACTER
+	//else  Buff[iwr++]= 'T';
+      DatoAnt = AzAnt = Dato;
+    }
+   //SI EL DATO ANTERIOR ES UNA ALTURA, ESTE DEBE SER UN RANGO
+   if(((DatoAnt&0xF000) == 0xC000)&&((Dato&0xF000) != 0x3000))
+       {
+	       cprintf("ERROR2   ");
+          ResetFifo();
+          //Buff[iwr++]= '5'; //error 5
+          //iwr = ird = 0;
+          FlagIni = 0;
+          banderainic = 1;    //modif R01!!!
+          return -1;
+       }
+    else DatoAnt = Dato;		//<--Agregado 10/03/2010
+
+  return 0;
+
+}
