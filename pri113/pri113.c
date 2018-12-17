@@ -27,15 +27,12 @@ int cambio;
 unsigned int AREA_INHIBICION=0;
 /*FIN DECLARACION VARIABLES VIEJAS*/
 
-int main (){
-
+int puente (){
 //Acá comienza la apertura de la memoria del HPS, el mapeo y el direccionamiento de los vectores D y A
-
 fd=open("/dev/mem",(O_RDWR|O_SYNC));
 virtual_base=mmap(NULL,REG_SPAN,(PROT_READ|PROT_WRITE),MAP_SHARED,fd,REG_BASE);
 D_addr=virtual_base+LECTURAESC_BASE;
 A_addr=virtual_base+ESCRITURA_BASE;
-
 
 //Se imprime y bienvenida al puente
 printf("Bienvenido a su puente espectacular de 32 bits \n");
@@ -51,28 +48,11 @@ scanf("%i", &A);
 *(uint32_t *)A_addr=A;
 usleep(100000);
 
-
-
-
 }
 return 0;
-
-
-
-
 }
-
-
 //-/ Copyright (c) 2018 Faa Reserved by lio .
-
 //-/ FIN LEA
-
-
-
-
-
-
-
 
 void main()
 {
@@ -224,7 +204,9 @@ void ResetFifo()
 int GetDato(unsigned int* Dato )
 {
   unsigned int Aux;
-  Aux = inpw(FIFO);
+  *(uint32_t *)A_addr=FIFO;//-/Aux = inpw(FIFO);
+  Aux = *(uint32_t *)D_addr;
+
   if(CtrlDato(Aux))
     return -1;
   *Dato = Aux;
@@ -290,4 +272,111 @@ int CtrlDato(unsigned int Dato)
 
   return 0;
 
+}
+int Primario_eco(unsigned int lectura)
+{
+   //unsigned int retorno;
+
+   int aux;
+   int j;
+   int dif;
+   int modulo;
+   int i;
+   int aztfinal;
+   int RangoAltura=0;
+//cprintf(". ");
+   if(((lectura & 0xf000)==0x8000)||((lectura & 0xf000)==0x3000)||((lectura & 0xf000)==0xC000)) /*Es lectura un dato valido?*/
+   		{ /* lectura si es dato valido*/
+    	if((lectura & 0xf000)==0x8000) /* es lectura un dato de azimuth?*/
+    		{  /* DATO ES AZIMUTH */
+    		//cprintf("%x  ",lectura);
+    		aztprom=lectura;
+    		sectoractual= ( lectura & 0x0f00 ) >> 8;
+            if( sectoractual != sectoranterior )
+      			{
+	      			//cprintf("%x   ",sectoractual);
+       			sectoranterior=sectoractual;
+       			cabecera(sectoractual);
+      			}
+       		}/*fin de "lectura es un azt"*/
+    	else /* es un rango o altura*/
+    		{
+     		if ((lectura & 0xf000)==0x3000) /*Si es rango*/
+     			{
+	     			lectura = ((lectura & 0x3FFF) + 19);   //1-abr-12   //Eliminar al corregir error de FPGA
+	     			if(lectura <= 0x3FFF){    //Procesa si esta dentro del rango   //1-abr-12
+
+	     		blancos(aztprom,lectura,0);
+          			}
+	          	}
+	        }
+    	}
+
+ return 0;
+}
+
+void cabecera(char sect)
+{
+/*
+  Esta rutina recibe el numero de sector y coloca la informacion de
+  cabecera en el buffer de transmision.
+  Modifica solamente el nibble correspondiente a sector.
+*/
+	int indloc;
+   unsigned char aux;
+
+   header[2]=(header[2] & 0xf0)|sect;
+
+	for(indloc=0;indloc<=3;indloc++)
+      {
+   		Buff[iwr++]=header[indloc];
+      	CabBuffUDP[iwr_u++]=header[indloc];
+      }
+   SectorActual = (unsigned char)sect;
+       //reordenamiento de bytes en el buffer
+       aux=CabBuffUDP[3];
+       CabBuffUDP[3]=CabBuffUDP[2];
+       CabBuffUDP[2]=aux;
+       //envio por UDP
+       if (WriteSocket(iSendSock, CabBuffUDP, 4, NET_FLG_BROADCAST) < 0)//error
+	    printf("Error on NetWrite %d bytes: %s\n", 4, Err(iNetErrNo));
+       iwr_u=0;
+}
+void blancos(unsigned int az, unsigned int rng, unsigned int Altr)
+{
+ unsigned char Sector = (unsigned char) ((az&0x0f00)>>8);
+ unsigned char SectAnt = (unsigned char) (abs(SectorActual - 1));
+ unsigned char aux;
+//cprintf("1=%x   2=%x   3=%x   ",Sector,SectAnt,SectorActual);
+ //cprintf("A=%x  ",Altr);
+ //Version WP101
+ if((Sector == SectorActual)||(Sector == SectAnt))
+  {
+   Buff[iwr++] = az & 0x00ff;
+   Buff[iwr++] = (az & 0xff00)>>8;
+   Buff[iwr++] = rng & 0x00ff;
+   Buff[iwr++] = (rng & 0xff00)>>8;
+   Buff[iwr++] = Altr & 0x00ff;
+   Buff[iwr++] = ((Altr & 0x0F00)>>8)+ 0xC0;
+
+   PlotBuffUDP[iwr_u++] = az & 0x00ff;
+   PlotBuffUDP[iwr_u++] = (az & 0xff00)>>8;
+   PlotBuffUDP[iwr_u++] = rng & 0x00ff;
+   PlotBuffUDP[iwr_u++] = (rng & 0xff00)>>8;
+   PlotBuffUDP[iwr_u++] = Altr & 0x00ff;
+   PlotBuffUDP[iwr_u++] = ((Altr & 0x0F00)>>8)+ 0xC0;
+  }
+//reordenamiento de bytes en el buffer
+for(iwr_u=0;iwr_u<=5;iwr_u=iwr_u+2)
+{
+aux=PlotBuffUDP[iwr_u];
+PlotBuffUDP[iwr_u]=PlotBuffUDP[iwr_u+1];
+PlotBuffUDP[iwr_u+1]=aux;
+}
+//envio por UDP
+if (WriteSocket(iSendSock, PlotBuffUDP, 6, NET_FLG_BROADCAST) < 0)//error
+	    printf("Error on NetWrite %d bytes: %s\n", 4, Err(iNetErrNo));
+       iwr_u=0;
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
