@@ -456,4 +456,3 @@ int ConfigCommand(char *pszCommand,int iShowError);
  */
 
 /*  EOF: capi.h */
-
