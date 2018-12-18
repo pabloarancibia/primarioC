@@ -1,5 +1,21 @@
 //-/ includes viejos
+#include <stdio.h>
+#include <dos.h>
+#include <conio.h>
+#include <time.h>
+#include <math.h>
+#include "fifo2.h"
+#include "comalt.h"
+//#include "interrup.h"
+#include "interalt.h"
 #include "primari1.h"
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <process.h>
+//++++++++++++++++++++++++++++
+#include "compiler.h"
 #include "capi.h"
 //-/ includes viejos
 
