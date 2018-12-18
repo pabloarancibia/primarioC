@@ -1330,4 +1330,3 @@ TIMERDELETE    delete a timer, free memory used by timer
 
 /*  EOF: api.h */
 #endif //_API_H
-

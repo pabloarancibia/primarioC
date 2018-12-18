@@ -3,7 +3,7 @@
 
 #define MAXDIFAZ     2
 
-#define tolerancia   7
+#define tolerancia   9//7
 #define max_vuelta 4096
 #define max_aus_cons 5 /*Determina el fin del blanco*/
 #define blancocorto 3

@@ -1,6 +1,9 @@
+//-/ includes viejos
+#include "primari1.h"
+#include "capi.h"
+//-/ includes viejos
+
 //*/PROGRAMA PUENTE CON GPIO DE LEANDRO
-
-
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -10,7 +13,6 @@
 #include "socal/hps.h"
 #include "socal/alt_gpio.h"
 #include "hps_0.h"
-
 
 #define REG_BASE 0xFF200000
 #define REG_SPAN 0x00200000
@@ -25,6 +27,7 @@ int cambio;
 
 /*INICIO DECLARACION VARIABLES VIEJAS*/
 unsigned int AREA_INHIBICION=0;
+int iSendSock;
 /*FIN DECLARACION VARIABLES VIEJAS*/
 
 int puente (){
@@ -47,7 +50,6 @@ scanf("%i", &A);
 
 *(uint32_t *)A_addr=A;
 usleep(100000);
-
 }
 return 0;
 }
@@ -86,7 +88,7 @@ system("socketp.exe");  //++++cargar configuraciones del socket UDP
 
 */
 
-//-/ InicializarUDP(); //-/
+InicializarUDP(); //-/
 
 //++++++++++++++++++++++++++++++lectura del archivo socket.cfg de configuracion++++++++++++++++++++++++++
  //-/ Inicializa();//-/ Inicializa llama a ComSet y a IntEna, ademas a ResetFifo
@@ -377,6 +379,102 @@ PlotBuffUDP[iwr_u+1]=aux;
 if (WriteSocket(iSendSock, PlotBuffUDP, 6, NET_FLG_BROADCAST) < 0)//error
 	    printf("Error on NetWrite %d bytes: %s\n", 4, Err(iNetErrNo));
        iwr_u=0;
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
+///////////////////////****************  SOCKET UDP **********************//////////////////////////////
+void InicializarUDP(void)
+{
+iSendSock = GetClientSock();  //Habilita el socket de envio
+if (iSendSock == 0)
+return;
+}
+
+static int GetClientSock(void)
+{
+   int iSock;
+
+   memset(&sNetAddr, 0, sizeof(NET_ADDR));
+   sNetAddr.wRemotePort = UDP_PORT;
+
+   printf("\nCONFIGURACION SOCKET\n");
+   printf("%d: sNetAddr.wLocalPort = %d\n", __LINE__, sNetAddr.wLocalPort);
+   printf("%d: sNetAddr.wRemotePort = %d\n", __LINE__, sNetAddr.wRemotePort);
+
+   if ((iSock = GetSocket()) < 0)
+      printf("Error on GetSocket(): %s\n",Err(iNetErrNo));
+   else if (SetSocketOption(iSock, 0, NET_OPT_NON_BLOCKING, 1, 1) < 0)
+      printf("Error on setOpt(): %s\n",Err(iNetErrNo));
+   else if (ConnectSocket(iSock, DATA_GRAM, &sNetAddr) < 0)
+      printf("Error on net_connect: %s\n",Err(iNetErrNo));
+   else
+   {
+   	printf("%d: sNetAddr.wLocalPort = %d\n",  __LINE__, sNetAddr.wLocalPort);
+      printf("%d: sNetAddr.wRemotePort = %d\n", __LINE__, sNetAddr.wRemotePort);
+      printf("Client sock successfully created\n");
+      return iSock;
+   }
+
+   return 0;
+}
+
+char *Err(unsigned uErrCode)
+{
+   static char rgcUnk[30];
+   static char *rgszErrs[] =
+   {
+      "NoErr","InUse","DOSErr","NoMem","NotNetconn","IllegalOp","BadPkt","NoHost","CantOpen","NetUnreachable","HostUnreachable","ProtUnreachable","PortUnreachable","TimeOut","HostUnknown",
+      "NoServers","ServerErr","BadFormat","BadArg","EOF","Reset","WouldBlock","UnBound","NoDesc","BadSysCall","CantBroadcast","NotEstab","ReEntry",
+   };
+
+   if (uErrCode == ERR_API_NOT_LOADED)
+      return "Sockets API not loaded";
+   if ((uErrCode & 0xff) > ERR_RE_ENTRY)
+   {
+      sprintf(rgcUnk,"Unknown error 0x%04X",uErrCode);
+      return rgcUnk;
+   }
+   return rgszErrs[uErrCode & 0xff];
+}
+///////////////////////****************  FIN SOCKET UDP **********************//////////////////////////////
+
+///////////////////////****************  SOCKET NUEVO **********************//////////////////////////////
+/*
+void socketnuevo{
+int Descriptor;
+Descriptor = socket (AF_INET, SOCK_DGRAM, 0);
+//El primer parámetro indica que es socket es de red, (podría ser AF_UNIX para un socket entre procesos dentro del mismo ordenador).
+//El segundo indica que es UDP (SOCK_STREAM indicaría un socket TCP orientado a conexión).
+//El tercero es el protocolo que queremos utilizar. Hay varios disponibles, pero poniendo un 0 dejamos al sistema que elija este detalle.
+
+//escribir en el fichero /etc/services (con permisos de root) el número de puerto que queremos atender y darle un nombre
+//tx113   25558/udp   # servicio de tx primario.
+
+}
+struct sockaddr_in Direccion;
+
+// Aquí hay que rellenar la estructura Direccion
+Direccion.sin_family = AF_INET;
+Direccion.sin_port = Puerto->s_port;
+Direccion.sin_addr.s_addr = INADDR_ANY;
+
+bind ( Descriptor, (struct sockaddr *)&Direccion, sizeof (Direccion));
+
+struct servent *Puerto = NULL;
+Puerto = getservbyname (tx113, "udp");
+
+Direccion.sin_port = Puerto->s_port;
+
+// Contendrá los datos del que nos envía el mensaje
+//struct sockaddr_in Cliente;
+
+// Tamaño de la estructura anterior /
+//int longitudCliente = sizeof(Cliente);
+
+// Nuestro mensaje es simplemente un entero, 4 bytes. //
+//int buffer;
+
+//recvfrom (Descriptor, (char *)&buffer, sizeof(buffer), 0, (struct sockaddr *)&Cliente, &longtudCliente);
+
+///////////////////////////////////////////////////////////////////
+sendto (Descriptor, (char *)&buffer, sizeof(buffer), 0, (struct sockaddr *)&Cliente, longitudCliente);
+*/
+///////////////////////**************** FIN SOCKET NUEVO **********************//////////////////////////////
