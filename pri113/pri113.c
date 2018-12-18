@@ -1,6 +1,7 @@
 //-/ includes viejos
+/*
 #include <stdio.h>
-#include <dos.h>
+//-/#include <dos.h>
 #include <conio.h>
 #include <time.h>
 #include <math.h>
@@ -17,6 +18,8 @@
 //++++++++++++++++++++++++++++
 #include "compiler.h"
 #include "capi.h"
+*/
+#include "primari1.h
 //-/ includes viejos
 
 //*/PROGRAMA PUENTE CON GPIO DE LEANDRO
@@ -397,6 +400,7 @@ if (WriteSocket(iSendSock, PlotBuffUDP, 6, NET_FLG_BROADCAST) < 0)//error
        iwr_u=0;
 }
 ///////////////////////****************  SOCKET UDP **********************//////////////////////////////
+/*
 void InicializarUDP(void)
 {
 iSendSock = GetClientSock();  //Habilita el socket de envio
@@ -450,6 +454,7 @@ char *Err(unsigned uErrCode)
    }
    return rgszErrs[uErrCode & 0xff];
 }
+*/
 ///////////////////////****************  FIN SOCKET UDP **********************//////////////////////////////
 
 ///////////////////////****************  SOCKET NUEVO **********************//////////////////////////////
