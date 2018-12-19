@@ -30,7 +30,7 @@ main ()
 	* Se abre el socket servidor, con el servicio "cpp_java" dado de
 	* alta en /etc/services.
 	*/
-	Socket_Servidor = Abre_Socket_Udp ("cpp_java");
+	Socket_Servidor = Abre_Socket_Udp ("socketudp113");
 	if (Socket_Servidor == -1)
 	{
 		printf ("No se puede abrir socket servidor\n");
