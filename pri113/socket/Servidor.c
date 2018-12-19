@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <netinet/in.h>
 
+#include <stdlib.h>
+
 /*
  * Programa principal.
  * Atiende al servicio udp de nombre cpp_java y espera peticiones de clientes.
