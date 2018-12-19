@@ -19,7 +19,7 @@
 #include "compiler.h"
 #include "capi.h"
 */
-#include "primari1.h
+#include "primari1.h"
 //-/ includes viejos
 
 //*/PROGRAMA PUENTE CON GPIO DE LEANDRO
@@ -399,6 +399,64 @@ if (WriteSocket(iSendSock, PlotBuffUDP, 6, NET_FLG_BROADCAST) < 0)//error
 	    printf("Error on NetWrite %d bytes: %s\n", 4, Err(iNetErrNo));
        iwr_u=0;
 }
+/////////////////////////////////////////////socket udp server////////////////////////////////////////
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
+#define PORT     8080
+#define MAXLINE 1024
+
+// Driver code
+int main() {
+    int sockfd;
+    char buffer[MAXLINE];
+    char *hello = "Hello from server";
+    struct sockaddr_in servaddr, cliaddr;
+
+    // Creating socket file descriptor
+    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(&servaddr, 0, sizeof(servaddr));
+    memset(&cliaddr, 0, sizeof(cliaddr));
+
+    // Filling server information
+    servaddr.sin_family    = AF_INET; // IPv4
+    servaddr.sin_addr.s_addr = INADDR_ANY;
+    servaddr.sin_port = htons(PORT);
+
+    // Bind the socket with the server address
+    if ( bind(sockfd, (const struct sockaddr *)&servaddr,
+            sizeof(servaddr)) < 0 )
+    {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    int len, n;
+    n = recvfrom(sockfd, (char *)buffer, MAXLINE,
+                MSG_WAITALL, ( struct sockaddr *) &cliaddr,
+                &len);
+    buffer[n] = '\0';
+    printf("Client : %s\n", buffer);
+    sendto(sockfd, (const char *)hello, strlen(hello),
+        MSG_CONFIRM, (const struct sockaddr *) &cliaddr,
+            len);
+    printf("Hello message sent.\n");
+
+    return 0;
+}*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////****************  SOCKET UDP **********************//////////////////////////////
 /*
 void InicializarUDP(void)
@@ -458,8 +516,9 @@ char *Err(unsigned uErrCode)
 ///////////////////////****************  FIN SOCKET UDP **********************//////////////////////////////
 
 ///////////////////////****************  SOCKET NUEVO **********************//////////////////////////////
-/*
-void socketnuevo{
+
+void socketnuevoserver()
+{
 int Descriptor;
 Descriptor = socket (AF_INET, SOCK_DGRAM, 0);
 //El primer parámetro indica que es socket es de red, (podría ser AF_UNIX para un socket entre procesos dentro del mismo ordenador).
@@ -474,28 +533,36 @@ struct sockaddr_in Direccion;
 
 // Aquí hay que rellenar la estructura Direccion
 Direccion.sin_family = AF_INET;
-Direccion.sin_port = Puerto->s_port;
-Direccion.sin_addr.s_addr = INADDR_ANY;
+Direccion.sin_port = Puerto->s_port;//leemos puerto de /etc/services
+Direccion.sin_addr.s_addr = INADDR_ANY;//El campo s_addr es la dirección IP del cliente al que queremos atender. Poniendo INADDR_ANY atenderemos a cualquier cliente.
 
 bind ( Descriptor, (struct sockaddr *)&Direccion, sizeof (Direccion));
 
+//Puerto para leer de /etc/services
 struct servent *Puerto = NULL;
 Puerto = getservbyname (tx113, "udp");
+//
 
-Direccion.sin_port = Puerto->s_port;
-
+////PARA RECIBIR MENSAJE//
 // Contendrá los datos del que nos envía el mensaje
-//struct sockaddr_in Cliente;
+struct sockaddr_in Cliente;
 
 // Tamaño de la estructura anterior /
-//int longitudCliente = sizeof(Cliente);
+int longitudCliente = sizeof(Cliente);
 
 // Nuestro mensaje es simplemente un entero, 4 bytes. //
-//int buffer;
+int buffer;
 
-//recvfrom (Descriptor, (char *)&buffer, sizeof(buffer), 0, (struct sockaddr *)&Cliente, &longtudCliente);
-
-///////////////////////////////////////////////////////////////////
+recvfrom (Descriptor, (char *)&buffer, sizeof(buffer), 0, (struct sockaddr *)&Cliente, &longtudCliente);
+////FIN PARA RECIBIR
+////////////////////
 sendto (Descriptor, (char *)&buffer, sizeof(buffer), 0, (struct sockaddr *)&Cliente, longitudCliente);
-*/
+/*La función para envío de mensajes es sendto(). Esta función admite seis parámetros, que son los mismos que la función recvfrom(). Su signifcado cambia un poco, así que vamos a verlos:
+
+int con el descriptor del socket por el que queremos enviar el mensaje. Lo obtuvimos con socket().
+char * con el buffer de datos que queremos enviar. En este caso, al llamar a sendto() ya debe estar relleno con los datos a enviar.
+int con el tamaño del mensaje anterior, en bytes.
+int con opciones. De momento nos vale poner un 0.
+struct sockaddr. Esta vez sí tiene que estar relleno, pero seguimos teniendo suerte, nos lo rellenó la función recvfrom(). Poniendo aquí la misma estructura que nos rellenó la función recvfrom(), estaremos enviando el mensaje al cliente que nos lo envío a nosotros previamente.
+int con el tamaño de la estructura sockaddr. Vale el mismo entero que nos devolvió la función recvfrom() como sexto parámetro.*/
 ///////////////////////**************** FIN SOCKET NUEVO **********************//////////////////////////////
