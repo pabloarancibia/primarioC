@@ -44,7 +44,7 @@ main ()
     * El servidor se le supone corriendo en la misma maquina (localhost) y
     * atendiendo al servicio cpp_java */
    Longitud_Servidor = sizeof(Servidor);
-   if (Dame_Direccion_Udp ("localhost", "cpp_java", &Servidor,
+   if (Dame_Direccion_Udp ("localhost", "socketudp113", &Servidor,
       &Longitud_Servidor) == -1)
    {
       printf ("No se pueden obtener los datos del servidor\n");
