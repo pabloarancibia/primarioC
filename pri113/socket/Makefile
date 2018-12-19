@@ -1,16 +1,23 @@
-# Javier Abellán. 20 Junio 2000
+# Javier AbellÃ¡n. 4 Septiembre 2003
 #
-# Makefile para la construcción de la mini-librería de sockets.
-#
+# Makefile para la construcciÃ³n del ejemplo Cliente/Servidor de socket UDP.
 
-# Objetivo del Makefile, la librería
-all : libChSocket.a
+# Poner en esta variable el path de la libreria libChSocket.a
+DIRLIBSOCKET=D:\PabloBibliotecas\Documentos\PrimarioC\pri113\socket
 
-# Ficheros objeto que van dentro de la minilibrería.
-OBJETOS=\
-	Socket_Servidor.o\
-	Socket_Cliente.o\
-	Socket.o
+LIBSOCKET=-lChSocket
 
-# Establecemos una dependencia, la librería depende de los ficheros objeto.
-libChSocket.a : libChSocket.a($(OBJETOS))
+all : Servidor Cliente
+
+CPPFLAGS = -g -I.
+
+Servidor : Servidor.c
+	cc -g -I. -I$(DIRLIBSOCKET) -L$(DIRLIBSOCKET) Servidor.c \
+	$(LIBSOCKET) -o Servidor
+
+Cliente : Cliente.c
+	cc -g -I. -I$(DIRLIBSOCKET) -L$(DIRLIBSOCKET) Cliente.c \
+	$(LIBSOCKET) -o Cliente
+
+clean :
+	rm Cliente Servidor
