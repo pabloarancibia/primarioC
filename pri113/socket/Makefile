@@ -3,7 +3,7 @@
 # Makefile para la construcción del ejemplo Cliente/Servidor de socket UDP.
 
 # Poner en esta variable el path de la libreria libChSocket.a
-DIRLIBSOCKET=D:\PabloBibliotecas\Documentos\PrimarioC\pri113\socket
+DIRLIBSOCKET=../lib
 
 LIBSOCKET=-lChSocket
 
